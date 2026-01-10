@@ -61,7 +61,31 @@ const updateCartItem = async (req, res) => {
     }
   };
   
-  module.exports = { addToCart, updateCartItem };
+// @desc Get logged-in user's cart
+// @route GET /api/cart
+const getCart = async (req, res) => {
+    try {
+      const cart = await Cart.findOne({ user: req.user._id })
+        .populate("items.product");
+  
+      if (!cart) {
+        return res.status(200).json({ items: [] });
+      }
+  
+      res.status(200).json(cart);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
+  
+  
+  module.exports = {
+    addToCart,
+    updateCartItem,
+    getCart
+  };
+  
   
   
   

@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { createProduct } = require("../controllers/productController");
-const protect = require("../middleware/authMiddleware");
-
-// Only logged-in users can create products
-router.post("/", protect, createProduct);
-
+const { protect, admin } = require("../middleware/authMiddleware");
+// Example: only admin can create product
+router.post("/", protect, admin, createProduct);
 module.exports = router;
 
