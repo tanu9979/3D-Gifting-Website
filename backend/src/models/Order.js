@@ -7,10 +7,23 @@ const orderSchema = new mongoose.Schema(
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
         quantity: { type: Number, default: 1 },
+        customization: {
+          color: {
+            name: String,
+            price: Number,
+            hex: String
+          },
+          material: {
+            name: String,
+            price: Number
+          },
+          text: String,
+          finalPrice: Number
+        }
       },
     ],
     totalPrice: { type: Number, required: true },
-    status: { type: String, default: "Placed" }, // Placed, Processing, Completed
+    status: { type: String, default: "order placed" },
   },
   { timestamps: true }
 );

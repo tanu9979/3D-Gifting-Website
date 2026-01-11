@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
+const Product = require("../models/Product");
 
 // @desc Place an order from cart
 // @route POST /api/orders
@@ -8,6 +9,15 @@ const placeOrder = async (req, res) => {
     const cart = await Cart.findOne({ user: req.user._id }).populate("items.product");
     if (!cart || cart.items.length === 0)
       return res.status(400).json({ message: "Cart is empty" });
+
+    // Check stock availability
+    for (const item of cart.items) {
+      if (item.product.stock < item.quantity) {
+        return res.status(400).json({ 
+          message: `Insufficient stock for ${item.product.name}. Available: ${item.product.stock}` 
+        });
+      }
+    }
 
     // Calculate total price
     const totalPrice = cart.items.reduce(
@@ -20,7 +30,16 @@ const placeOrder = async (req, res) => {
       user: req.user._id,
       items: cart.items,
       totalPrice,
+      status: "order placed"
     });
+
+    // Update product stock
+    for (const item of cart.items) {
+      await Product.findByIdAndUpdate(
+        item.product._id,
+        { $inc: { stock: -item.quantity } }
+      );
+    }
 
     // Clear cart
     cart.items = [];
@@ -42,6 +61,17 @@ const getUserOrders = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc Get all orders (admin only)
+// @route GET /api/orders/all
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({}).populate("items.product").populate("user", "name email");
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // @desc Update order status
 // @route PUT /api/orders/:id/status
 const updateOrderStatus = async (req, res) => {
@@ -58,4 +88,4 @@ const updateOrderStatus = async (req, res) => {
     }
   };
   
-module.exports = { placeOrder, getUserOrders,updateOrderStatus };
+module.exports = { placeOrder, getUserOrders, getAllOrders, updateOrderStatus };

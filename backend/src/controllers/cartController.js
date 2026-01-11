@@ -3,7 +3,7 @@ const Cart = require("../models/Cart");
 // Add product to cart
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, quantity, customization } = req.body;
 
     let cart = await Cart.findOne({ user: req.user._id });
 
@@ -11,17 +11,22 @@ const addToCart = async (req, res) => {
       // create new cart
       cart = new Cart({
         user: req.user._id,
-        items: [{ product: productId, quantity }],
+        items: [{ product: productId, quantity, customization }],
       });
     } else {
-      // check if product exists in cart
-      const itemIndex = cart.items.findIndex(
-        (item) => item.product.toString() === productId
-      );
-      if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += quantity;
+      // For customized products, always add as new item
+      if (customization) {
+        cart.items.push({ product: productId, quantity, customization });
       } else {
-        cart.items.push({ product: productId, quantity });
+        // check if product exists in cart (for regular products)
+        const itemIndex = cart.items.findIndex(
+          (item) => item.product.toString() === productId && !item.customization
+        );
+        if (itemIndex > -1) {
+          cart.items[itemIndex].quantity += quantity;
+        } else {
+          cart.items.push({ product: productId, quantity });
+        }
       }
     }
 
@@ -80,10 +85,35 @@ const getCart = async (req, res) => {
   
   
   
+// @desc Remove item from cart
+// @route DELETE /api/cart/:itemId
+const removeFromCart = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+
+    const cart = await Cart.findOne({ user: req.user._id });
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    const itemIndex = cart.items.findIndex(
+      (item) => item._id.toString() === itemId
+    );
+    if (itemIndex === -1)
+      return res.status(404).json({ message: "Item not in cart" });
+
+    cart.items.splice(itemIndex, 1);
+    await cart.save();
+    
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
   module.exports = {
     addToCart,
     updateCartItem,
-    getCart
+    getCart,
+    removeFromCart
   };
   
   
