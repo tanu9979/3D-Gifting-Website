@@ -2,7 +2,7 @@ const API_BASE_URL = 'https://threed-gifting-website.onrender.com'
 
 const api = {
   async login(credentials) {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
@@ -13,7 +13,7 @@ const api = {
   },
 
   async register(userData) {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -24,14 +24,14 @@ const api = {
   },
 
   async getProducts() {
-    const response = await fetch(`${API_BASE_URL}/products`)
+    const response = await fetch(`${API_BASE_URL}/api/products`)
     const data = await response.json()
     if (!response.ok) throw new Error(data.message || 'Failed to fetch products')
     return data
   },
 
   async addToCart(productId, quantity, token, customization = null) {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const response = await fetch(`${API_BASE_URL}/api/cart`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const api = {
   },
 
   async getCart(token) {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const response = await fetch(`${API_BASE_URL}/api/cart`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     const data = await response.json()
@@ -54,7 +54,7 @@ const api = {
   },
 
   async removeFromCart(itemId, token) {
-    const response = await fetch(`${API_BASE_URL}/cart/${itemId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/cart/${itemId}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -64,7 +64,7 @@ const api = {
   },
 
   async updateCart(productId, quantity, token) {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const response = await fetch(`${API_BASE_URL}/api/cart`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const api = {
   },
 
   async placeOrder(token) {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    const response = await fetch(`${API_BASE_URL}/api/orders`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -88,7 +88,7 @@ const api = {
   },
 
   async createProduct(productData, token) {
-    const response = await fetch(`${API_BASE_URL}/products`, {
+    const response = await fetch(`${API_BASE_URL}/api/products`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const api = {
   },
 
   async updateProduct(id, productData, token) {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ const api = {
   },
 
   async deleteProduct(id, token) {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -126,7 +126,7 @@ const api = {
   },
 
   async getAllOrders(token) {
-    const response = await fetch(`${API_BASE_URL}/orders/all`, {
+    const response = await fetch(`${API_BASE_URL}/api/orders/all`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     const data = await response.json()
@@ -135,7 +135,7 @@ const api = {
   },
 
   async updateOrderStatus(orderId, status, token) {
-    const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
+    const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ const api = {
   },
 
   async getUserOrders(token) {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    const response = await fetch(`${API_BASE_URL}/api/orders`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     const data = await response.json()
