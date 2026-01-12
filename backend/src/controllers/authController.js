@@ -45,26 +45,26 @@ const loginUser = async (req, res) => {
     try {
       const { email, password } = req.body;
   
-      // 1️⃣ Check if user exists
+      // Check if user exists
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
   
-      // 2️⃣ Compare password
+      // Compare password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
   
-      // 3️⃣ Generate JWT
+      //  Generate JWT
       const token = require("jsonwebtoken").sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET || "secret123",
         { expiresIn: "1d" }
       );
   
-      // 4️⃣ Send response
+      // Send response
       res.json({
         message: "Login successful",
         token,

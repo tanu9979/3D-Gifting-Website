@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Product = require('./src/models/Product');
 require('dotenv').config();
-
 const sample3DProducts = [
   {
     name: "Custom 3D Diary",
