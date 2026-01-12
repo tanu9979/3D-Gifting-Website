@@ -21,6 +21,12 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
+
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
+
 // test route
 app.get("/", (req, res) => {
   res.send("E-commerce Backend API is running...");
