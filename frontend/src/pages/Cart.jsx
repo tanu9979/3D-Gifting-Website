@@ -98,7 +98,7 @@ function Cart({ cart, setCart, user }) {
       <div style={{ textAlign: 'center', padding: '4rem' }}>
         <h2>Your cart is empty</h2>
         <p style={{ margin: '1rem 0', color: '#666' }}>Add some products to get started!</p>
-        <a href="/products" className="btn btn-primary">Continue Shopping</a>
+        {/* <a href="/products" className="btn btn-primary">Continue Shopping</a> */}
       </div>
     )
   }
